@@ -12,10 +12,10 @@ private:
     };
 
     Node** table; // Указатель на массив указателей на узлы
-    size_t size; // Размер таблицы
-    size_t count; // Количество элементов
+    size_t size; // size table
+    size_t count; // count elements
 
-    // Хэш-функция
+    // hash function
     size_t hash(size_t key) const {
         return key % size;
     }
@@ -40,7 +40,6 @@ public:
         delete[] table;
     }
 
-    // Вставка пары ключ-значение
     void insert(const size_t key, const Value& value) {
         if (find(key) != nullptr) {
             return;
@@ -52,7 +51,6 @@ public:
         count++;
     }
 
-    // Поиск значения по ключу
     Value* find(const size_t key) const {
         size_t index = hash(key);
         Node* current = table[index];
@@ -65,7 +63,6 @@ public:
         return nullptr;
     }
 
-    // Удаление пары по ключу
     void erase(const size_t key) {
         size_t index = hash(key);
         Node* current = table[index];
@@ -87,7 +84,6 @@ public:
         }
     }
 
-    //ok
     HashTable<Value> unionWith(const HashTable<Value>& other) const {
         HashTable<Value> result(size > other.size ? size : other.size);
         for (size_t i = 0; i < size; ++i) {
@@ -113,6 +109,7 @@ public:
         for (size_t i = 0; i < result.size; ++i) {
             Node* current = table[i];
             while (current) {
+                //if the element is not in the second set, it does not fit
                 if (other.find(current->key) == nullptr) {
                     current = current->next;
                     continue;
@@ -123,12 +120,13 @@ public:
         }
         return result;
     }
-    //ok
+
     HashTable<Value> differenceWith(const HashTable<Value>& other) const {
         HashTable<Value> result(size);
         for (size_t i = 0; i < size; ++i) {
             Node* current = table[i];
             while (current) {
+                //if the element is not in the second set, it is suitable
                 if (other.find(current->key) == nullptr) {
                     result.insert(current->key, current->value);
                 }
@@ -137,21 +135,24 @@ public:
         }
         return result;
     }
-    //ok
+
     HashTable<Value> symetricDifferenceWith(const HashTable<Value>& other) const {
         HashTable<Value> result(size);
         for (size_t i = 0; i < size; ++i) {
             Node* current = table[i];
             while (current) {
+                //insert what is in the first set but not in the second
                 if (other.find(current->key) == nullptr) {
                     result.insert(current->key, current->value);
                 }
                 current = current->next;
             }
         }
+
         for (size_t i = 0; i < size; ++i) {
             Node* current = other.table[i];
             while (current) {
+                //insert what is in the second set but not in the first
                 if (find(current->key) == nullptr) {
                     result.insert(current->key, current->value);
                 }
@@ -160,24 +161,24 @@ public:
         }
         return result;
     }
-    //ok
+
     Value* operator[](const size_t key) {
         return find(key);
     }
 
-    //ok
     size_t capacity() const {
         return count;
     }
     
-    //ok
     bool compare(const HashTable<Value>& other) const {
+        //if the number of elements does not match
         if (count != other.count) {
             return false;
         }
         for (size_t i = 0; i < size; ++i) {
             Node* current = table[i];
             while (current) {
+                //if you find an element that is not in the second set
                 if (other.find(current->key) == nullptr) {
                     return false;
                 }
@@ -201,12 +202,11 @@ public:
                 current = current->next;
             }
         }
-        //Обработка случая, если все элементы идут подряд и нужно вставить следующий (0, 0) (1, 1) -> (0, 0) (1, 1) (2, 2)
+        //Handling the case if all the elements are in a row and you need to insert the next one (0, 0) (1, 1) -> (0, 0) (1, 1) (2, 2)
         insert(firstMissingOneKey, Value(firstMissingOneKey));
     }
 
 
-    // Вывод таблицы
     void print() const {
         for (size_t i = 0; i < size; ++i) {
             std::cout << "Index " << i << ": ";
