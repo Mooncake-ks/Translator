@@ -10,44 +10,107 @@ struct Node {
     Node(const size_t k, const Value& v) : key(k), value(v), next(nullptr) {}
 };
 
-template<typename Value>
+template <typename Value>
 class HashTableIterator {
 public:
-    explicit HashTableIterator(Node<Value>** table = nullptr, int index = 0) : date(table) {}
+    HashTableIterator(Node<Value>* node = nullptr, size_t bucketIndex = 0, size_t tableSize = 0, Node<Value>** tablePtr = nullptr) :
+        currentNode(node), currentBucket(bucketIndex), tableSize(tableSize), table(tablePtr) {}
 
-    HashTableIterator(const HashTableIterator& iterator) : HashTableIterator(iterator.date) {}
+    HashTableIterator(const HashTableIterator& other) :
+        currentNode(other.currentNode), currentBucket(other.currentBucket), tableSize(other.tableSize), table(other.table) {}
 
     ~HashTableIterator() = default;
 
-    bool operator==(const HashTableIterator& lhs) const {
-        return date == lhs.date;
+    bool operator==(const HashTableIterator& other) const {
+        return currentNode == other.currentNode;
     }
 
-    bool operator!=(const HashTableIterator& lhs) const {
-        return date != lhs.date;
+    bool operator!=(const HashTableIterator& other) const {
+        return !(*this == other);
     }
 
-    HashTableIterator operator++() {
-        ++index;
-        return date[indx];
+    HashTableIterator& operator++() {
+        if (currentNode) {
+            currentNode = currentNode->next;
+            if (!currentNode) {
+                // Move to the next non-empty bucket
+                ++currentBucket;
+                while (currentBucket < tableSize && (table[currentBucket] == nullptr)) {
+                    ++currentBucket;
+                }
+                if (currentBucket < tableSize) {
+                    currentNode = table[currentBucket];
+                }
+            }
+        }
+        return *this;
     }
 
-    //HashTableIterator operator++(int post) {
-
-    //}
-    //HashTableIterator operator--() {
-
-    //}
-    //HashTableIterator operator--(int post) {
-
-    //}
-    Node<Value>* operator*() {
-        return date[index];
+    HashTableIterator operator++(int) {
+        HashTableIterator temp = *this;
+        ++(*this);
+        return temp;
     }
-private:
-    int index = 0;
-    Node<Value>* node;
-    Node<Value>** date;
+
+    HashTableIterator& operator--() {
+        if (currentNode == nullptr) {
+            --currentBucket;
+            while (currentBucket > 0 && table[currentBucket] == nullptr) {
+                --currentBucket;
+            }
+            if (currentBucket >= 0) {
+                currentNode = table[currentBucket];
+                while (currentNode->next) {
+                    currentNode = currentNode->next;
+                }
+            }
+        }
+        else {
+            if (currentNode->next == nullptr) {
+                --currentBucket;
+                while (currentBucket >= 0 && table[currentBucket] == nullptr) {
+                    --currentBucket;
+                }
+                if (currentBucket >= 0) {
+                    currentNode = table[currentBucket];
+                    while (currentNode->next) {
+                        currentNode = currentNode->next;
+                    }
+                }
+                else {
+                    currentNode = nullptr;
+                }
+            }
+            else {
+                // find last element in the chain
+                Node<Value>* last = currentNode;
+                while (last->next != nullptr) {
+                    last = last->next;
+                }
+                currentNode = last;
+            }
+        }
+        return *this;
+    }
+
+    HashTableIterator operator--(int) {
+        HashTableIterator temp = *this;
+        --(*this);
+        return temp;
+    }
+
+    Node<Value>* operator*() const {
+        return currentNode;
+    }
+
+
+
+    Node<Value>* currentNode;
+    size_t currentBucket;
+    size_t tableSize;
+    Node<Value>** table;
+
+    //friend class HashTable<Value>; //Allow HashTable access to private members
 };
 
 template <typename Value>
@@ -66,21 +129,15 @@ public:
     using iterator = HashTableIterator<Value>;
 
     iterator begin() {
-        for (int i = 0; i < size; ++i) {
-            if (table[i] != nullptr) {
-                //first bucket
-                return iterator(table, i);
-            }
+        size_t i = 0;
+        while (i < size && table[i] == nullptr) {
+            ++i;
         }
+        return iterator(table[i], i, size, table);
     }
-    //iterator end() {
-    //    for (int i = size - 1; i >= 0; --i) {
-    //        if (table[i] != nullptr) {
-    //            //for the last one bucket
-    //            return iterator(table[i + 1]);
-    //        }
-    //    }
-    //}
+    iterator end() {
+        return iterator(nullptr, size, size, table);
+    }
 
     HashTable(size_t capacity) : size(capacity), count(0) {
         table = new Node<Value>* [size];
