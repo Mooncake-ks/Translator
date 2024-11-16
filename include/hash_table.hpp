@@ -1,7 +1,6 @@
 #include <iostream>
 #pragma once
 
-
 template <typename Value>
 struct Node {
     size_t key;
@@ -11,10 +10,54 @@ struct Node {
     Node(const size_t k, const Value& v) : key(k), value(v), next(nullptr) {}
 };
 
+template<typename Value>
+class HashTableIterator {
+public:
+    using difference_type = std::ptrdiff_t;
+    using value_type = std::remove_cv_t<Value>;
+    using pointer = Value*;
+    using reference = Value&;
+    using iterator_category = std::random_access_iterator_tag;
+    using iterator_concept = std::contiguous_iterator_tag;
+
+    explicit HashTableIterator(Node<Value>* ptr = nullptr) : date(ptr) {}
+
+    HashTableIterator(const HashTableIterator& iterator) : HashTableIterator(iterator.date) {}
+
+    ~HashTableIterator() = default;
+
+    bool operator==(const HashTableIterator& lhs) const {
+        return date == lhs.date;
+    }
+
+    bool operator!=(const HashTableIterator& lhs) const {
+        return date != lhs.date;
+    }
+
+    //HashTableIterator operator++() {
+
+    //}
+
+    //HashTableIterator operator++(int post) {
+
+    //}
+    //HashTableIterator operator--() {
+
+    //}
+    //HashTableIterator operator--(int post) {
+
+    //}
+    Value& operator*() {
+        return date->value;
+    }
+private:
+    Node<Value>* date;
+};
+
 template <typename Value>
 class HashTable {
 private:
-    Node<Value>** table; // ”казатель на массив указателей на узлы
+    Node<Value>** table; // ptr array to nodes
     size_t size; // size table
     size_t count; // count elements
 
@@ -24,19 +67,21 @@ private:
     }
 
 public:
-    //using iterator = HashTableIterator<Value>;
-    //using const_iterator = HashTableIterator<const Value>;
-    //using reverse_iterator = std::reverse_iterator<Iterator<Value>>;
-    //using const_reverse_iterator = std::reverse_iterator<HashTableIterator<const Value>>;
+    using iterator = HashTableIterator<Value>;
+    using const_iterator = HashTableIterator<const Value>;
+    /*using reverse_iterator = std::reverse_iterator<HashTableIterator<Value>>;
+    using const_reverse_iterator = std::reverse_iterator<HashTableIterator<const Value>>;*/
 
-    //iterator begin() {
-    //    size_t first_el = 0;
-    //    
-    //    while (find(first_el) == nullptr) {
-    //        ++first_el;
-    //    }
-    //    return iterator(head); 
-    //}
+    iterator begin() {
+        size_t first_el = 0;
+        Node<Value>* el = nullptr;
+
+        while (el == nullptr) {
+            el = find(first_el);
+            ++first_el;
+        }
+        return iterator(el); 
+    }
     /*iterator end() { return iterator(tail->next); }
     iterator begin() const { return iterator(head); }
     iterator end() const { return iterator(tail->next); }
@@ -279,47 +324,3 @@ public:
         return is;
     }
 };
-
-//template<typename Value>
-//class HashTableIterator {
-//public:
-//    using difference_type = std::ptrdiff_t;
-//    using value_type = std::remove_cv_t<Value>;
-//    using pointer = Type*;
-//    using reference = Type&;
-//    using iterator_category = std::random_access_iterator_tag;
-//    using iterator_concept = std::contiguous_iterator_tag;
-//
-//    explicit HashTableIterator(Node<Value>* ptr = nullptr) : date(ptr) {}
-//
-//    HashTableIterator(const HashTableIterator& iterator) : HashTableIterator(iterator.date) {}
-//
-//    ~HashTableIterator() = default;
-//
-//    bool operator==(const HashTableIterator& lhs) const {
-//        return date == lhs.date;
-//    }
-//
-//    bool operator!=(const HashTableIterator& lhs) const {
-//        return date != lhs.date;
-//    }
-//
-//    HashTableIterator operator++() {
-//       
-//    }
-//
-//    HashTableIterator operator++(int post) {
-//
-//    }
-//    HashTableIterator operator--() {
-//
-//    }
-//    HashTableIterator operator--(int post) {
-//
-//    }
-//    Value& operator*() {
-//
-//    }
-//private:
-//    Node<Value>* date;
-//};
