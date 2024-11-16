@@ -219,4 +219,30 @@ public:
         }
         std::cout << std::endl;
     }
+
+    friend std::ostream& operator<<(std::ostream& os, const HashTable<Value>& ht) {
+        os << "Set: ";
+        for (size_t i = 0; i < ht.size; ++i) {
+            Node* current = ht.table[i];
+            while (current != nullptr) {
+                os << current->value << " ";
+                current = current->next;
+            }
+        }
+        os << std::endl;
+        return os;
+    }
+
+    friend std::istream& operator>>(std::istream& is, HashTable<Value>& ht) {
+        int count = 0;
+        std::cout << "Input count el: ";
+        std::cin >> count;
+        Value value;
+        while (count) {
+            is >> value;
+            ht.insert(value, value);
+            --count;
+        }
+        return is;
+    }
 };

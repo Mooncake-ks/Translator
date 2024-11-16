@@ -54,6 +54,11 @@ int main() {
     ht7.insert(1, 1);
     ht7.addingFirstMissingOne();
     ht7.print();
+    std::cout << ht7;
+
+    HashTable<int> ht8(3);
+    std::cin >> ht8;
+    ht8.print();
 
     return 0;
 }
