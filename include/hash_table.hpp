@@ -13,14 +13,7 @@ struct Node {
 template<typename Value>
 class HashTableIterator {
 public:
-    using difference_type = std::ptrdiff_t;
-    using value_type = std::remove_cv_t<Value>;
-    using pointer = Value*;
-    using reference = Value&;
-    using iterator_category = std::random_access_iterator_tag;
-    using iterator_concept = std::contiguous_iterator_tag;
-
-    explicit HashTableIterator(Node<Value>* ptr = nullptr) : date(ptr) {}
+    explicit HashTableIterator(Node<Value>** table = nullptr, int index = 0) : date(table) {}
 
     HashTableIterator(const HashTableIterator& iterator) : HashTableIterator(iterator.date) {}
 
@@ -35,9 +28,8 @@ public:
     }
 
     HashTableIterator operator++() {
-        //?
-        date = date->next;
-        return *this;
+        ++index;
+        return date[indx];
     }
 
     //HashTableIterator operator++(int post) {
@@ -49,11 +41,13 @@ public:
     //HashTableIterator operator--(int post) {
 
     //}
-    Value& operator*() {
-        return date->value;
+    Node<Value>* operator*() {
+        return date[index];
     }
 private:
-    Node<Value>* date;
+    int index = 0;
+    Node<Value>* node;
+    Node<Value>** date;
 };
 
 template <typename Value>
@@ -75,18 +69,18 @@ public:
         for (int i = 0; i < size; ++i) {
             if (table[i] != nullptr) {
                 //first bucket
-                return iterator(table[i]);
+                return iterator(table, i);
             }
         }
     }
-    iterator end() {
-        for (int i = size - 1; i >= 0; --i) {
-            if (table[i] != nullptr) {
-                //for the last one bucket
-                return iterator(table[i + 1]);
-            }
-        }
-    }
+    //iterator end() {
+    //    for (int i = size - 1; i >= 0; --i) {
+    //        if (table[i] != nullptr) {
+    //            //for the last one bucket
+    //            return iterator(table[i + 1]);
+    //        }
+    //    }
+    //}
 
     HashTable(size_t capacity) : size(capacity), count(0) {
         table = new Node<Value>* [size];

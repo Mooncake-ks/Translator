@@ -59,9 +59,8 @@ int main() {
     /*HashTable<int> ht8(3);
     std::cin >> ht8;
     ht8.print();*/
-
-    std::cout << *ht1.begin() << "\n";
-    std::cout << *(++ht1.begin()) << "\n";
+    std::cout << (*ht2.begin())->value << "\n";
+    //std::cout << *(++ht1.begin()) << "\n";
     /*std::cout << (ht1.begin() == ht1.begin()) << "\n";
     std::cout << (ht1.begin() != ht1.begin()) << "\n";
     std::cout << (ht1.begin() == ht1.end()) << "\n";
