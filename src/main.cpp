@@ -60,7 +60,13 @@ int main() {
     std::cin >> ht8;
     ht8.print();*/
 
-    std::cout << *ht1.begin();
+    std::cout << *ht1.begin() << "\n";
+    std::cout << *(++ht1.begin()) << "\n";
+    /*std::cout << (ht1.begin() == ht1.begin()) << "\n";
+    std::cout << (ht1.begin() != ht1.begin()) << "\n";
+    std::cout << (ht1.begin() == ht1.end()) << "\n";
+    std::cout << (ht1.begin() != ht1.end()) << "\n";*/
+    //std::cout << *ht1.end();
 
     return 0;
 }

@@ -34,9 +34,11 @@ public:
         return date != lhs.date;
     }
 
-    //HashTableIterator operator++() {
-
-    //}
+    HashTableIterator operator++() {
+        //?
+        date = date->next;
+        return *this;
+    }
 
     //HashTableIterator operator++(int post) {
 
@@ -68,33 +70,23 @@ private:
 
 public:
     using iterator = HashTableIterator<Value>;
-    using const_iterator = HashTableIterator<const Value>;
-    /*using reverse_iterator = std::reverse_iterator<HashTableIterator<Value>>;
-    using const_reverse_iterator = std::reverse_iterator<HashTableIterator<const Value>>;*/
 
     iterator begin() {
-        size_t first_el = 0;
-        Node<Value>* el = nullptr;
-
-        while (el == nullptr) {
-            el = find(first_el);
-            ++first_el;
+        for (int i = 0; i < size; ++i) {
+            if (table[i] != nullptr) {
+                //first bucket
+                return iterator(table[i]);
+            }
         }
-        return iterator(el); 
     }
-    /*iterator end() { return iterator(tail->next); }
-    iterator begin() const { return iterator(head); }
-    iterator end() const { return iterator(tail->next); }
-    const_iterator cbegin() const { return head; }
-    const_iterator cend() const { return tail->next; }
-    reverse_iterator rbegin() { return std::make_reverse_iterator(tail); }
-    reverse_iterator rend() { return std::make_reverse_iterator(head); }
-    reverse_iterator rbegin() const { return std::make_reverse_iterator(rbegin()); }
-    reverse_iterator rend() const  { return std::make_reverse_iterator(rend()); }
-    const_reverse_iterator crbegin() const { return rend(); }
-    const_reverse_iterator crend() const { return rbegin(); }*/
-
-
+    iterator end() {
+        for (int i = size - 1; i >= 0; --i) {
+            if (table[i] != nullptr) {
+                //for the last one bucket
+                return iterator(table[i + 1]);
+            }
+        }
+    }
 
     HashTable(size_t capacity) : size(capacity), count(0) {
         table = new Node<Value>* [size];
