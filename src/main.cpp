@@ -131,7 +131,8 @@ int main() {
         * Indx 1: (7, 7) (1, 1)
         * Indx 2: (2, 2)
         */
-        std::cout << "&&&&&&&&&&&&&&\n";
+        std::cout << "----------------------------\n";
+        std::cout << "CHECK ++ OPERATOR CASE:\n";
         HashTable<int> ht8(3);
         ht8.insert(1, 1);
         ht8.insert(2, 2);
@@ -162,15 +163,35 @@ int main() {
         //num bucket - 2
         auto NumBucket3 = (++(++(++ht8.begin()))).currentBucket;
         std::cout << "\nNode value: " << fourthValue << " Num bucket: " << NumBucket3 << "\n";
-
-        //std::cout << (*((--ht.begin())))->value << "\n";
     }
-    //std::cout << *(++ht1.begin()) << "\n";
-    /*std::cout << (ht1.begin() == ht1.begin()) << "\n";
-    std::cout << (ht1.begin() != ht1.begin()) << "\n";
-    std::cout << (ht1.begin() == ht1.end()) << "\n";
-    std::cout << (ht1.begin() != ht1.end()) << "\n";*/
-    //std::cout << *ht1.end();
 
+    {
+        /*
+        * Indx 0: (3, 3)
+        * Indx 1: (7, 7) (1, 1)
+        * Indx 2: (2, 2)
+        */
+        std::cout << "----------------------------\n";
+        std::cout << "CHECK -- OPERATOR CASE:\n";
+        HashTable<int> ht8(3);
+        ht8.insert(1, 1);
+        ht8.insert(2, 2);
+        ht8.insert(3, 3);
+        ht8.insert(7, 7);
+        ht8.print();
+
+        auto value = ht8.begin();
+        std::cout << "\nNode value: " << value.currentNode->value << " Num bucket: " << value.currentBucket << "\n";
+        ++value;
+        --value;
+        std::cout << "\nNode value: " << value.currentNode->value << " Num bucket: " << value.currentBucket << "\n";
+        (++(++value));
+        (--(--value));
+        std::cout << "\nNode value: " << value.currentNode->value << " Num bucket: " << value.currentBucket << "\n";
+        (++(++(++value)));
+        (--(--(--value)));
+        std::cout << "\nNode value: " << value.currentNode->value << " Num bucket: " << value.currentBucket << "\n";
+
+    }
     return 0;
 }

@@ -53,6 +53,44 @@ public:
     }
 
     HashTableIterator& operator--() {
+        //if (currentNode == nullptr) {
+        //    --currentBucket;
+        //    while (currentBucket > 0 && table[currentBucket] == nullptr) {
+        //        --currentBucket;
+        //    }
+        //    if (currentBucket >= 0) {
+        //        currentNode = table[currentBucket];
+        //        while (currentNode->next) {
+        //            currentNode = currentNode->next;
+        //        }
+        //    }
+        //}
+        //else {
+        //    if (currentNode->next == nullptr) {
+        //        --currentBucket;
+        //        while (currentBucket >= 0 && table[currentBucket] == nullptr) {
+        //            --currentBucket;
+        //        }
+        //        if (currentBucket >= 0) {
+        //            currentNode = table[currentBucket];
+        //            while (currentNode->next) {
+        //                currentNode = currentNode->next;
+        //            }
+        //        }
+        //        else {
+        //            currentNode = nullptr;
+        //        }
+        //    }
+        //    else {
+        //        // find last element in the chain
+        //        Node<Value>* last = currentNode;
+        //        while (last->next != nullptr) {
+        //            last = last->next;
+        //        }
+        //        currentNode = last;
+        //    }
+        //}
+        //return *this;
         if (currentNode == nullptr) {
             --currentBucket;
             while (currentBucket > 0 && table[currentBucket] == nullptr) {
@@ -66,28 +104,33 @@ public:
             }
         }
         else {
-            if (currentNode->next == nullptr) {
-                --currentBucket;
-                while (currentBucket >= 0 && table[currentBucket] == nullptr) {
-                    --currentBucket;
+            
+            auto tmpNode = table[currentBucket];
+            //if there are several nodes in the bucket or we are on the very first node in the bucket or empty bucket
+            if (table[currentBucket] != currentNode) {
+                auto* tmpNode = table[currentBucket];
+                while (tmpNode->next != currentNode) {
+                    ++tmpNode;
                 }
-                if (currentBucket >= 0) {
-                    currentNode = table[currentBucket];
-                    while (currentNode->next) {
-                        currentNode = currentNode->next;
-                    }
-                }
-                else {
-                    currentNode = nullptr;
-                }
+                currentNode = tmpNode;
+                return *this;
             }
             else {
-                // find last element in the chain
-                Node<Value>* last = currentNode;
-                while (last->next != nullptr) {
-                    last = last->next;
+                //go to the previous bucket, but not to the nullptr bucket
+                --currentBucket;
+                while (currentBucket > 0 && table[currentBucket] == nullptr) {
+                    --currentBucket;
                 }
-                currentNode = last;
+                if (currentBucket < 0) {
+                    currentNode = nullptr;
+                    return *this;
+                }
+                auto* tmpNode = table[currentBucket];
+                while (tmpNode->next != nullptr) {
+                    tmpNode = tmpNode->next;
+                }
+                currentNode = tmpNode;
+                return *this;
             }
         }
         return *this;
