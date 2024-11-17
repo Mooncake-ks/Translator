@@ -126,6 +126,7 @@ private:
     }
 
 public:
+    using value_type = Value;
     using iterator = HashTableIterator<Value>;
 
     iterator begin() {
