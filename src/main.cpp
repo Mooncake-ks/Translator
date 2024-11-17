@@ -125,10 +125,46 @@ int main() {
         std::cout << ht;
     }
 
-    /*HashTable<int> ht8(3);
-    std::cin >> ht8;
-    ht8.print();*/
-    std::cout << (*((--ht.end())))->value << "\n";
+    {
+        /*
+        * Indx 0: (3, 3)
+        * Indx 1: (7, 7) (1, 1)
+        * Indx 2: (2, 2)
+        */
+        std::cout << "&&&&&&&&&&&&&&\n";
+        HashTable<int> ht8(3);
+        ht8.insert(1, 1);
+        ht8.insert(2, 2);
+        ht8.insert(3, 3);
+        ht8.insert(7, 7);
+        ht8.print();
+
+        //value - 3
+        auto firstValue = (ht8.begin()).currentNode->value;
+        //num bucket - 0
+        auto NumBucket = (ht8.begin()).currentBucket;
+        std::cout << "\nNode value: " << firstValue << " Num bucket: " << NumBucket << "\n";
+
+        //value - 7
+        auto secondValue = (++ht8.begin()).currentNode->value;
+        //num bucket - 1
+        auto NumBucket1 = (++ht8.begin()).currentBucket;
+        std::cout << "\nNode value: " << secondValue << " Num bucket: " << NumBucket1 << "\n";
+
+        //value - 1
+        auto thirdValue = (++(++ht8.begin())).currentNode->value;
+        //num bucket - 1
+        auto NumBucket2 = (++(++ht8.begin())).currentBucket;
+        std::cout << "\nNode value: " << thirdValue << " Num bucket: " << NumBucket2 << "\n";
+
+        //value - 2
+        auto fourthValue = (++(++(++ht8.begin()))).currentNode->value;
+        //num bucket - 2
+        auto NumBucket3 = (++(++(++ht8.begin()))).currentBucket;
+        std::cout << "\nNode value: " << fourthValue << " Num bucket: " << NumBucket3 << "\n";
+
+        //std::cout << (*((--ht.begin())))->value << "\n";
+    }
     //std::cout << *(++ht1.begin()) << "\n";
     /*std::cout << (ht1.begin() == ht1.begin()) << "\n";
     std::cout << (ht1.begin() != ht1.begin()) << "\n";
