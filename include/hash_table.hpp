@@ -353,6 +353,30 @@ public:
         return true;
     }
 
+    bool operator == (const HashTable<Value>& other) const {
+        return this->count == other.count;
+    }
+
+    bool operator != (const HashTable<Value>& other) const {
+        return !(*this == other);
+    }
+
+    bool operator > (const HashTable<Value>& other) const {
+        return count > other.count ? true : false;
+    }
+
+    bool operator < (const HashTable<Value>& other) const {
+        return !(*this > other);
+    }
+
+    bool operator >= (const HashTable<Value>& other) const {
+        return *this > other || *this == other;
+    }
+
+    bool operator <= (const HashTable<Value>& other) const {
+        return *this < other || *this == other;
+    }
+
     void addingFirstMissingOne() {
         size_t firstMissingOneKey = 0;
         for (size_t i = 0; i < size; ++i) {
@@ -403,8 +427,9 @@ public:
         std::cout << "Input count el: ";
         std::cin >> count;
         Value value;
+
         while (count) {
-            is >> value;
+            is >> value
             ht.insert(value, value);
             --count;
         }
