@@ -193,5 +193,49 @@ int main() {
         std::cout << "\nNode value: " << value.currentNode->value << " Num bucket: " << value.currentBucket << "\n";
 
     }
+
+    {
+        std::cout << "----------------------------\n";
+        std::cout << "CHECK == OPERATOR CASE(ht and ht1):\n";
+        std::cout << (ht == ht1) << "\n";
+    }
+
+    {
+        std::cout << "----------------------------\n";
+        std::cout << "CHECK != OPERATOR CASE(ht and ht1):\n";
+        std::cout << (ht != ht1) << "\n";
+    }
+
+    {
+        std::cout << "----------------------------\n";
+        std::cout << "CHECK > OPERATOR CASE(ht and ht1):\n";
+        std::cout << (ht > ht1) << "\n";
+    }
+
+    {
+        std::cout << "----------------------------\n";
+        std::cout << "CHECK < OPERATOR CASE(ht and ht1):\n";
+        std::cout << (ht < ht1) << "\n";
+    }
+
+    {
+        std::cout << "----------------------------\n";
+        std::cout << "CHECK >= OPERATOR CASE(ht and ht1):\n";
+        std::cout << (ht >= ht1) << "\n";
+    }
+
+    {
+        std::cout << "----------------------------\n";
+        std::cout << "CHECK <= OPERATOR CASE(ht and ht1):\n";
+        std::cout << (ht <= ht1) << "\n";
+    }
+
+    {
+        std::cout << "----------------------------\n";
+        std::cout << "CHECK >> OPERATOR CASE:\n";
+        HashTable<int> ht;
+        std::cin >> ht;
+        ht.print();
+    }
     return 0;
 }

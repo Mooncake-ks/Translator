@@ -1,6 +1,5 @@
 #include <iostream>
 #pragma once
-
 template <typename Value>
 struct Node {
     size_t key;
@@ -181,6 +180,13 @@ public:
     }
     iterator end() {
         return iterator(nullptr, size, size, table);
+    }
+
+    HashTable() : size(8), count(0) {
+        table = new Node<Value>*[size];
+        for (size_t i = 0; i < size; ++i) {
+            table[i] = nullptr;
+        }
     }
 
     HashTable(size_t capacity) : size(capacity), count(0) {
@@ -423,15 +429,28 @@ public:
     }
 
     friend std::istream& operator>>(std::istream& is, HashTable<Value>& ht) {
-        int count = 0;
-        std::cout << "Input count el: ";
-        std::cin >> count;
-        Value value;
-
-        while (count) {
-            is >> value
-            ht.insert(value, value);
-            --count;
+        char c;
+        is >> c; //read the '['
+        if (c != '[') {
+            is.unget(); // put the character back into the stream if it wasnt '['
+            return is; // return the stream to signal failure
+        }
+        std::string line;
+        char next_char;
+        while (is >> next_char) {
+            if (next_char == ']') {
+                break;
+            }
+            else {
+                is.unget(); // put it back if it wasnt ']'
+                Value value;
+                is >> value; //read the value
+                if (is.fail()) {
+                    std::cerr << "Error: Invalid input." << std::endl;
+                    return is;
+                }
+                ht.insert(value, value);
+            }
         }
         return is;
     }
