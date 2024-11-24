@@ -201,13 +201,13 @@ int main() {
         std::cout << (ht <= ht1) << "\n";
     }
 
-    {
-        std::cout << "----------------------------\n";
-        std::cout << "CHECK >> OPERATOR CASE:\n";
-        HashTable<int> ht;
-        std::cin >> ht;
-        ht.print();
-    }
+    //{
+    //    std::cout << "----------------------------\n";
+    //    std::cout << "CHECK >> OPERATOR CASE:\n";
+    //    HashTable<int> ht;
+    //    std::cin >> ht;
+    //    ht.print();
+    //}
 
     {
         std::cout << "----------------------------\n";
@@ -223,5 +223,25 @@ int main() {
         ht7.print();
         std::cout << ht7;
     }
+
+    {
+        std::cout << "----------------------------\n";
+        std::cout << "CHECK ASSIGMENT OPERATOR CASE:\n";
+        HashTable<int> ht8(3);
+        ht8.insert(1, 1);
+        ht8.insert(2, 2);
+        ht8.insert(3, 3);
+        ht8.insert(7, 7);
+        ht8.print();
+        std::cout << ht8 << "\n";
+        HashTable<int> ht7;
+        HashTable<int> ht6;
+        ht7 = ht6 = ht8;
+        ht7.print();
+        std::cout << ht7 << "\n";
+        ht6.print();
+        std::cout << ht6;
+    }
+
     return 0;
 }

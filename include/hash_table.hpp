@@ -126,15 +126,7 @@ public:
     }
 
     ~HashTable() {
-        for (size_t i = 0; i < size; ++i) {
-            Node<Value>* current = table[i];
-            while (current != nullptr) {
-                Node<Value>* next = current->next;
-                delete current;
-                current = next;
-            }
-        }
-        delete[] table;
+        destroy();
     }
 
     void insert(const size_t key, const Value& value) {
@@ -312,6 +304,29 @@ public:
         return *this < other || *this == other;
     }
 
+    HashTable<Value>& operator=(const HashTable<Value>& other) {
+        if (table == other.table) {
+            return *this;
+        }
+        destroy();
+        size = other.size;
+        table = new Node<Value>*[size];
+        for (size_t i = 0; i < size; i++) {
+            table[i] = nullptr;
+        }
+        count = 0;
+        for (size_t i = 0; i < size; ++i) {
+            Node<Value>* current = other.table[i];
+            while (current != nullptr) {
+                insert(current->key, current->value);
+                current = current->next;
+            }
+        }
+
+
+        return *this;
+    }
+
     void addingFirstMissingOne() {
         size_t firstMissingOneKey = 0;
         for (size_t i = 0; i < size; ++i) {
@@ -384,5 +399,21 @@ public:
             }
         }
         return is;
+    }
+
+    void destroy() {
+        if (table == nullptr) {
+            return;
+        }
+        for (size_t i = 0; i < size; ++i) {
+            Node<Value>* current = table[i];
+            while (current != nullptr) {
+                Node<Value>* next = current->next;
+                delete current;
+                current = next;
+            }
+        }
+        delete[] table;
+        table = nullptr;
     }
 };
