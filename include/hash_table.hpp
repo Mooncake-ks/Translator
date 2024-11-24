@@ -20,7 +20,7 @@ public:
     ~HashTableIterator() = default;
 
     bool operator==(const HashTableIterator& other) const {
-        return currentNode == other.currentNode;
+        return currentNode == other.currentNode && table == other.table;
     }
 
     bool operator!=(const HashTableIterator& other) const {
