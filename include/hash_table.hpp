@@ -105,6 +105,26 @@ public:
         }
     }
 
+    HashTable(const HashTable<Value>& other) {
+        count = 0;
+        size = other.size;
+        table = new Node<Value>*[size];
+        for (size_t i = 0; i < size; ++i) {
+            table[i] = nullptr;
+        }
+
+        for (size_t i = 0; i < other.size; ++i) {
+            Node<Value>* current = other.table[i];
+            while (current != nullptr) {
+                Node<Value>* next = current->next;
+                if (find(current->key) == nullptr) {
+                    insert(current->key, current->value);
+                }
+                current = next;
+            }
+        }
+    }
+
     ~HashTable() {
         for (size_t i = 0; i < size; ++i) {
             Node<Value>* current = table[i];

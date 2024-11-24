@@ -208,5 +208,20 @@ int main() {
         std::cin >> ht;
         ht.print();
     }
+
+    {
+        std::cout << "----------------------------\n";
+        std::cout << "CHECK COPY CONSTRUCTOR CASE:\n";
+        HashTable<int> ht8(3);
+        ht8.insert(1, 1);
+        ht8.insert(2, 2);
+        ht8.insert(3, 3);
+        ht8.insert(7, 7);
+        ht8.print();
+        std::cout << ht8 << "\n";
+        HashTable<int> ht7(ht8);
+        ht7.print();
+        std::cout << ht7;
+    }
     return 0;
 }
