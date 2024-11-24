@@ -1,5 +1,39 @@
 #include <iostream>
 #pragma once
+
+template<typename Value>
+void qsortRecursive(Value* mas, int size) {
+    int i = 0;
+    int j = size - 1;
+
+    int mid = mas[size / 2];
+
+    do {
+        while (mas[i] < mid) {
+            i++;
+        }
+        while (mas[j] > mid) {
+            j--;
+        }
+        if (i <= j) {
+            Value tmp = mas[i];
+            mas[i] = mas[j];
+            mas[j] = tmp;
+
+            i++;
+            j--;
+        }
+    } while (i <= j);
+
+    if (j > 0) {
+        qsortRecursive(mas, j + 1);
+    }
+    if (i < size) {
+        qsortRecursive(&mas[i], size - i);
+    }
+}
+
+
 template <typename Value>
 struct Node {
     size_t key;
@@ -326,21 +360,29 @@ public:
     }
 
     void addingFirstMissingOne() {
-        size_t firstMissingOneKey = 0;
+        Value* vectorizedHashTable = new Value[count];
+        int arrInd = 0;
         for (size_t i = 0; i < size; ++i) {
             Node<Value>* current = table[i];
-            while (current) {
-                if (find(firstMissingOneKey) == nullptr) {
-                    // (0, 0) (3, 3) -> (0, 0) (1, 1) (3, 3)
-                    insert(firstMissingOneKey, Value(firstMissingOneKey));
-                    return;
-                }
-                firstMissingOneKey++;
+            while (current != nullptr) {
+                vectorizedHashTable[arrInd] = current->value;
+                ++arrInd;
                 current = current->next;
             }
         }
-        //Handling the case if all the elements are in a row and you need to insert the next one (0, 0) (1, 1) -> (0, 0) (1, 1) (2, 2)
-        insert(firstMissingOneKey, Value(firstMissingOneKey));
+
+        qsortRecursive(vectorizedHashTable, count);
+        Value targetValue = 0;
+        for (int i = 0; i < count; ++i) {
+            if (vectorizedHashTable[i] != targetValue) {
+                insert(targetValue, targetValue);
+                delete[] vectorizedHashTable;
+                return;
+            }
+            ++targetValue;
+        }
+        insert(targetValue, targetValue);
+        delete[] vectorizedHashTable;
     }
 
 
