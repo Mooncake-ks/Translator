@@ -6,7 +6,7 @@ struct Node {
     Value value;
     Node* next;
 
-    Node(const size_t k, const Value& v) : key(k), value(v), next(nullptr) {}
+    Node(size_t k, const Value& v) : key(k), value(v), next(nullptr) {}
 };
 
 template <typename Value>
@@ -15,8 +15,7 @@ public:
     HashTableIterator(Node<Value>* node = nullptr, size_t bucketIndex = 0, size_t tableSize = 0, Node<Value>** tablePtr = nullptr) :
         currentNode(node), currentBucket(bucketIndex), tableSize(tableSize), table(tablePtr) {}
 
-    HashTableIterator(const HashTableIterator& other) :
-        currentNode(other.currentNode), currentBucket(other.currentBucket), tableSize(other.tableSize), table(other.table) {}
+    HashTableIterator(const HashTableIterator& other) = default;
 
     ~HashTableIterator() = default;
 
