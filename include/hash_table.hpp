@@ -52,44 +52,6 @@ public:
     }
 
     HashTableIterator& operator--() {
-        //if (currentNode == nullptr) {
-        //    --currentBucket;
-        //    while (currentBucket > 0 && table[currentBucket] == nullptr) {
-        //        --currentBucket;
-        //    }
-        //    if (currentBucket >= 0) {
-        //        currentNode = table[currentBucket];
-        //        while (currentNode->next) {
-        //            currentNode = currentNode->next;
-        //        }
-        //    }
-        //}
-        //else {
-        //    if (currentNode->next == nullptr) {
-        //        --currentBucket;
-        //        while (currentBucket >= 0 && table[currentBucket] == nullptr) {
-        //            --currentBucket;
-        //        }
-        //        if (currentBucket >= 0) {
-        //            currentNode = table[currentBucket];
-        //            while (currentNode->next) {
-        //                currentNode = currentNode->next;
-        //            }
-        //        }
-        //        else {
-        //            currentNode = nullptr;
-        //        }
-        //    }
-        //    else {
-        //        // find last element in the chain
-        //        Node<Value>* last = currentNode;
-        //        while (last->next != nullptr) {
-        //            last = last->next;
-        //        }
-        //        currentNode = last;
-        //    }
-        //}
-        //return *this;
         if (currentNode == nullptr) {
             --currentBucket;
             while (currentBucket > 0 && table[currentBucket] == nullptr) {
@@ -416,15 +378,17 @@ public:
     }
 
     friend std::ostream& operator<<(std::ostream& os, const HashTable<Value>& ht) {
-        os << "Set: ";
+        os << "[";
+        bool flagBracket = false;
         for (size_t i = 0; i < ht.size; ++i) {
             Node<Value>* current = ht.table[i];
             while (current != nullptr) {
-                os << current->value << " ";
+                os << (flagBracket ? " " : "") << current->value;
                 current = current->next;
+                flagBracket = true;
             }
         }
-        os << std::endl;
+        os << "]" << std::endl;
         return os;
     }
 
