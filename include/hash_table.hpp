@@ -50,58 +50,6 @@ public:
         return temp;
     }
 
-    HashTableIterator& operator--() {
-        if (currentNode == nullptr) {
-            --currentBucket;
-            while (currentBucket > 0 && table[currentBucket] == nullptr) {
-                --currentBucket;
-            }
-            if (currentBucket >= 0) {
-                currentNode = table[currentBucket];
-                while (currentNode->next) {
-                    currentNode = currentNode->next;
-                }
-            }
-        }
-        else {
-            
-            auto tmpNode = table[currentBucket];
-            //if there are several nodes in the bucket or we are on the very first node in the bucket or empty bucket
-            if (table[currentBucket] != currentNode) {
-                auto* tmpNode = table[currentBucket];
-                while (tmpNode->next != currentNode) {
-                    ++tmpNode;
-                }
-                currentNode = tmpNode;
-                return *this;
-            }
-            else {
-                //go to the previous bucket, but not to the nullptr bucket
-                --currentBucket;
-                while (currentBucket > 0 && table[currentBucket] == nullptr) {
-                    --currentBucket;
-                }
-                if (currentBucket < 0) {
-                    currentNode = nullptr;
-                    return *this;
-                }
-                auto* tmpNode = table[currentBucket];
-                while (tmpNode->next != nullptr) {
-                    tmpNode = tmpNode->next;
-                }
-                currentNode = tmpNode;
-                return *this;
-            }
-        }
-        return *this;
-    }
-
-    HashTableIterator operator--(int) {
-        HashTableIterator temp = *this;
-        --(*this);
-        return temp;
-    }
-
     Node<Value>* operator*() const {
         return currentNode;
     }
