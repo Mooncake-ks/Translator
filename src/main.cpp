@@ -193,13 +193,13 @@ int main() {
         std::cout << (ht <= ht1) << "\n";
     }
 
-    //{
-    //    std::cout << "----------------------------\n";
-    //    std::cout << "CHECK >> OPERATOR CASE:\n";
-    //    HashTable<int> ht;
-    //    std::cin >> ht;
-    //    ht.print();
-    //}
+    {
+        std::cout << "----------------------------\n";
+        std::cout << "CHECK >> OPERATOR CASE:\n";
+        HashTable<int> ht;
+        std::cin >> ht;
+        ht.print();
+    }
 
     {
         std::cout << "----------------------------\n";
