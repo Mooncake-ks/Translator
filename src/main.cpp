@@ -141,28 +141,20 @@ int main() {
         ht8.print();
 
         //value - 3
-        auto firstValue = (ht8.begin()).currentNode->value;
-        //num bucket - 0
-        auto NumBucket = (ht8.begin()).currentBucket;
-        std::cout << "\nNode value: " << firstValue << " Num bucket: " << NumBucket << "\n";
+        auto firstValue = (**(ht8.begin())).value;
+        std::cout << "\nNode value: " << firstValue << "\n";
 
         //value - 7
-        auto secondValue = (++ht8.begin()).currentNode->value;
-        //num bucket - 1
-        auto NumBucket1 = (++ht8.begin()).currentBucket;
-        std::cout << "\nNode value: " << secondValue << " Num bucket: " << NumBucket1 << "\n";
+        auto secondValue = (**(++ht8.begin())).value;
+        std::cout << "\nNode value: " << secondValue << "\n";
 
         //value - 1
-        auto thirdValue = (++(++ht8.begin())).currentNode->value;
-        //num bucket - 1
-        auto NumBucket2 = (++(++ht8.begin())).currentBucket;
-        std::cout << "\nNode value: " << thirdValue << " Num bucket: " << NumBucket2 << "\n";
+        auto thirdValue = (**(++(++ht8.begin()))).value;
+        std::cout << "\nNode value: " << thirdValue << "\n";
 
         //value - 2
-        auto fourthValue = (++(++(++ht8.begin()))).currentNode->value;
-        //num bucket - 2
-        auto NumBucket3 = (++(++(++ht8.begin()))).currentBucket;
-        std::cout << "\nNode value: " << fourthValue << " Num bucket: " << NumBucket3 << "\n";
+        auto fourthValue = (**(++(++(++ht8.begin())))).value;
+        std::cout << "\nNode value: " << fourthValue << "\n";
     }
 
     {

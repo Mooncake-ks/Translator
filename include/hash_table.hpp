@@ -55,13 +55,11 @@ public:
     }
 
 
-
+private:
     Node<Value>* currentNode;
     size_t currentBucket;
     size_t tableSize;
     Node<Value>** table;
-
-    //friend class HashTable<Value>; //Allow HashTable access to private members
 };
 
 template <typename Value>
@@ -381,7 +379,6 @@ public:
             is.unget(); // put the character back into the stream if it wasnt '['
             return is; // return the stream to signal failure
         }
-        std::string line;
         char next_char;
         while (is >> next_char) {
             if (next_char == ']') {
