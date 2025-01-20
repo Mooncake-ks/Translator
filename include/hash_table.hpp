@@ -1,37 +1,7 @@
 #include <iostream>
 #pragma once
 
-template<typename Value>
-void qsortRecursive(Value* mas, int size) {
-    int i = 0;
-    int j = size - 1;
 
-    int mid = mas[size / 2];
-
-    do {
-        while (mas[i] < mid) {
-            i++;
-        }
-        while (mas[j] > mid) {
-            j--;
-        }
-        if (i <= j) {
-            Value tmp = mas[i];
-            mas[i] = mas[j];
-            mas[j] = tmp;
-
-            i++;
-            j--;
-        }
-    } while (i <= j);
-
-    if (j > 0) {
-        qsortRecursive(mas, j + 1);
-    }
-    if (i < size) {
-        qsortRecursive(&mas[i], size - i);
-    }
-}
 
 
 template <typename Value>
@@ -65,7 +35,6 @@ public:
         if (currentNode) {
             currentNode = currentNode->next;
             if (!currentNode) {
-                // Move to the next non-empty bucket
                 ++currentBucket;
                 while (currentBucket < tableSize && (table[currentBucket] == nullptr)) {
                     ++currentBucket;
@@ -84,8 +53,8 @@ public:
         return temp;
     }
 
-    Node<Value>* operator*() const {
-        return currentNode;
+    Value operator*() const {
+        return currentNode->value;
     }
 
 
@@ -99,15 +68,42 @@ private:
 template <typename Value>
 class HashTable {
 private:
-    Node<Value>** table; // ptr array to nodes
-    size_t size; // size table
-    size_t count; // count elements
+    Node<Value>** table; 
+    size_t size; 
+    size_t count; 
 
-    // hash function
+    
     size_t hash(size_t key) const {
         return key % size;
     }
 
+    Node<Value>* find(const size_t key) const {
+        size_t index = hash(key);
+        Node<Value>* current = table[index];
+        while (current != nullptr) {
+            if (current->key == key) {
+                return current;
+            }
+            current = current->next;
+        }
+        return nullptr;
+    }
+
+    void destroy() {
+        if (table == nullptr) {
+            return;
+        }
+        for (size_t i = 0; i < size; ++i) {
+            Node<Value>* current = table[i];
+            while (current != nullptr) {
+                Node<Value>* next = current->next;
+                delete current;
+                current = next;
+            }
+        }
+        delete[] table;
+        table = nullptr;
+    }
 public:
     using value_type = Value;
     using iterator = HashTableIterator<Value>;
@@ -116,6 +112,11 @@ public:
         size_t i = 0;
         while (i < size && table[i] == nullptr) {
             ++i;
+        }
+
+        if (i==size)
+        {
+            return iterator(nullptr, i, size, table);
         }
         return iterator(table[i], i, size, table);
     }
@@ -158,7 +159,15 @@ public:
     }
 
     ~HashTable() {
-        destroy();
+        for (size_t i = 0; i < size; ++i) {
+            Node<Value>* current = table[i];
+            while (current != nullptr) {
+                Node<Value>* next = current->next;
+                delete current;
+                current = next;
+            }
+        }
+        delete[] table;
     }
 
     void insert(const size_t key, const Value& value) {
@@ -170,18 +179,6 @@ public:
         newNode->next = table[index];
         table[index] = newNode;
         count++;
-    }
-
-    Node<Value>* find(const size_t key) const {
-        size_t index = hash(key);
-        Node<Value>* current = table[index];
-        while (current != nullptr) {
-            if (current->key == key) {
-                return current;
-            }
-            current = current->next;
-        }
-        return nullptr;
     }
 
     void erase(const size_t key) {
@@ -229,7 +226,6 @@ public:
         for (size_t i = 0; i < result.size; ++i) {
             Node<Value>* current = table[i];
             while (current) {
-                //if the element is not in the second set, it does not fit
                 if (other.find(current->key) == nullptr) {
                     current = current->next;
                     continue;
@@ -246,7 +242,6 @@ public:
         for (size_t i = 0; i < size; ++i) {
             Node<Value>* current = table[i];
             while (current) {
-                //if the element is not in the second set, it is suitable
                 if (other.find(current->key) == nullptr) {
                     result.insert(current->key, current->value);
                 }
@@ -261,7 +256,6 @@ public:
         for (size_t i = 0; i < size; ++i) {
             Node<Value>* current = table[i];
             while (current) {
-                //insert what is in the first set but not in the second
                 if (other.find(current->key) == nullptr) {
                     result.insert(current->key, current->value);
                 }
@@ -272,7 +266,6 @@ public:
         for (size_t i = 0; i < size; ++i) {
             Node<Value>* current = other.table[i];
             while (current) {
-                //insert what is in the second set but not in the first
                 if (find(current->key) == nullptr) {
                     result.insert(current->key, current->value);
                 }
@@ -282,27 +275,27 @@ public:
         return result;
     }
 
-    Value* operator[](const size_t key) {
+    Value operator[](const size_t key) {
         Node<Value>* el = find(key);
         if (el == nullptr) {
-            return nullptr;
+            return -1;
         }
-        return &(el->value);
+        return (el->value);
     }
 
-    size_t capacity() const {
+    size_t power() const {
         return count;
     }
     
-    bool compare(const HashTable<Value>& other) const {
-        //if the number of elements does not match
+    bool operator ==(const HashTable<Value>& other) const {
+       
         if (count != other.count) {
             return false;
         }
         for (size_t i = 0; i < size; ++i) {
             Node<Value>* current = table[i];
             while (current) {
-                //if you find an element that is not in the second set
+                
                 if (other.find(current->key) == nullptr) {
                     return false;
                 }
@@ -312,29 +305,10 @@ public:
         return true;
     }
 
-    bool operator == (const HashTable<Value>& other) const {
-        return this->count == other.count;
-    }
-
     bool operator != (const HashTable<Value>& other) const {
         return !(*this == other);
     }
 
-    bool operator > (const HashTable<Value>& other) const {
-        return count > other.count ? true : false;
-    }
-
-    bool operator < (const HashTable<Value>& other) const {
-        return !(*this > other);
-    }
-
-    bool operator >= (const HashTable<Value>& other) const {
-        return *this > other || *this == other;
-    }
-
-    bool operator <= (const HashTable<Value>& other) const {
-        return *this < other || *this == other;
-    }
 
     HashTable<Value>& operator=(const HashTable<Value>& other) {
         if (table == other.table) {
@@ -360,43 +334,21 @@ public:
     }
 
     void addingFirstMissingOne() {
-        Value* vectorizedHashTable = new Value[count];
-        int arrInd = 0;
+        size_t firstMissingOneKey = 0;
         for (size_t i = 0; i < size; ++i) {
             Node<Value>* current = table[i];
-            while (current != nullptr) {
-                vectorizedHashTable[arrInd] = current->value;
-                ++arrInd;
+            while (current) {
+                if (find(firstMissingOneKey) == nullptr) {
+
+                    insert(firstMissingOneKey, Value(firstMissingOneKey));
+                    return;
+                }
+                firstMissingOneKey++;
                 current = current->next;
             }
         }
 
-        qsortRecursive(vectorizedHashTable, count);
-        Value targetValue = 0;
-        for (int i = 0; i < count; ++i) {
-            if (vectorizedHashTable[i] != targetValue) {
-                insert(targetValue, targetValue);
-                delete[] vectorizedHashTable;
-                return;
-            }
-            ++targetValue;
-        }
-        insert(targetValue, targetValue);
-        delete[] vectorizedHashTable;
-    }
-
-
-    void print() const {
-        for (size_t i = 0; i < size; ++i) {
-            std::cout << "Index " << i << ": ";
-            Node<Value>* current = table[i];
-            while (current != nullptr) {
-                std::cout << "(" << current->key << ", " << current->value << ") ";
-                current = current->next;
-            }
-            std::cout << std::endl;
-        }
-        std::cout << std::endl;
+        insert(firstMissingOneKey, Value(firstMissingOneKey));
     }
 
     friend std::ostream& operator<<(std::ostream& os, const HashTable<Value>& ht) {
@@ -416,10 +368,10 @@ public:
 
     friend std::istream& operator>>(std::istream& is, HashTable<Value>& ht) {
         char c;
-        is >> c; //read the '['
+        is >> c; 
         if (c != '[') {
-            is.unget(); // put the character back into the stream if it wasnt '['
-            return is; // return the stream to signal failure
+            is.unget(); 
+            return is; 
         }
         char next_char;
         while (is >> next_char) {
@@ -427,9 +379,9 @@ public:
                 break;
             }
             else {
-                is.unget(); // put it back if it wasnt ']'
+                is.unget(); 
                 Value value;
-                is >> value; //read the value
+                is >> value; 
                 if (is.fail()) {
                     std::cerr << "Error: Invalid input." << std::endl;
                     return is;
@@ -438,21 +390,5 @@ public:
             }
         }
         return is;
-    }
-
-    void destroy() {
-        if (table == nullptr) {
-            return;
-        }
-        for (size_t i = 0; i < size; ++i) {
-            Node<Value>* current = table[i];
-            while (current != nullptr) {
-                Node<Value>* next = current->next;
-                delete current;
-                current = next;
-            }
-        }
-        delete[] table;
-        table = nullptr;
     }
 };
